@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Giao diện minh họa danh sách sản phẩm điện máy và thông số kỹ thuật.">
+  <title>Điện máy XANH — Sản phẩm nổi bật</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#" aria-label="Điện máy XANH - Trang chủ">
+        <span class="brand-mark" aria-hidden="true">X</span>
+        <span class="brand-copy"><strong>ĐIỆN MÁY <span>XANH</span></strong><small>Gợi ý thiết bị cho gia đình</small></span>
+      </a>
+      <p class="header-note">Giao diện mẫu phục vụ bài tập HTML5 &amp; CSS3</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">THIẾT BỊ GIA ĐÌNH</p>
+      <h1 id="page-title">Sản phẩm nổi bật</h1>
+      <p class="intro-text">Tham khảo sản phẩm và các thông số chính để chọn thiết bị phù hợp với nhu cầu sử dụng.</p>
+    </section>
+
+    <section class="product-grid" aria-label="Danh sách sản phẩm mẫu">
+      <article class="product-card">
+        <div class="product-image image-washer">
+          <img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=900&q=85" alt="Máy giặt cửa trước màu trắng" loading="lazy">
+          <span class="product-tag">Gia đình</span>
+        </div>
+        <div class="product-content">
+          <p class="product-category">MÁY GIẶT</p>
+          <h2>Máy giặt cửa trước 10 kg</h2>
+          <p class="product-description">Phù hợp gia đình nhiều thành viên, có nhiều chương trình giặt.</p>
+          <p class="price">7.490.000₫</p>
+          <dl class="quick-specs">
+            <div><dt>Khối lượng giặt</dt><dd>10 kg</dd></div>
+            <div><dt>Kiểu máy</dt><dd>Cửa trước</dd></div>
+            <div><dt>Động cơ</dt><dd>Inverter</dd></div>
+          </dl>
+          <button class="detail-button" type="button" aria-label="Xem thông số máy giặt cửa trước 10 kg" onclick="toggleSpecs(this)">Xem thông số kỹ thuật</button>
+          <div class="full-specs" hidden>
+            <h3>Thông số kỹ thuật</h3>
+            <table>
+              <tbody>
+                <tr><th scope="row">Kích thước (R × C × S)</th><td>Theo thông tin nhà sản xuất</td></tr>
+                <tr><th scope="row">Công suất</th><td>Kiểm tra theo model cụ thể</td></tr>
+                <tr><th scope="row">Công nghệ</th><td>Động cơ Inverter</td></tr>
+                <tr><th scope="row">Tiêu thụ điện</th><td>Thay đổi theo chương trình sử dụng</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=900&q=85" alt="Tủ lạnh gia đình hai cửa" loading="lazy">
+          <span class="product-tag">Bảo quản thực phẩm</span>
+        </div>
+        <div class="product-content">
+          <p class="product-category">TỦ LẠNH</p>
+          <h2>Tủ lạnh hai cửa 250 lít</h2>
+          <p class="product-description">Thiết kế gọn gàng, phù hợp căn hộ và gia đình nhỏ.</p>
+          <p class="price">6.990.000₫</p>
+          <dl class="quick-specs">
+            <div><dt>Dung tích</dt><dd>250 lít</dd></div>
+            <div><dt>Số cửa</dt><dd>2 cửa</dd></div>
+            <div><dt>Làm lạnh</dt><dd>Đa chiều</dd></div>
+          </dl>
+          <button class="detail-button" type="button" aria-label="Xem thông số tủ lạnh hai cửa 250 lít" onclick="toggleSpecs(this)">Xem thông số kỹ thuật</button>
+          <div class="full-specs" hidden>
+            <h3>Thông số kỹ thuật</h3>
+            <table>
+              <tbody>
+                <tr><th scope="row">Kích thước (R × C × S)</th><td>Theo thông tin nhà sản xuất</td></tr>
+                <tr><th scope="row">Dung tích sử dụng</th><td>250 lít (mẫu minh họa)</td></tr>
+                <tr><th scope="row">Công nghệ</th><td>Làm lạnh đa chiều</td></tr>
+                <tr><th scope="row">Tiêu thụ điện</th><td>Kiểm tra nhãn năng lượng/model</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=900&q=85" alt="Máy điều hòa không khí treo tường" loading="lazy">
+          <span class="product-tag">Làm mát</span>
+        </div>
+        <div class="product-content">
+          <p class="product-category">ĐIỀU HÒA</p>
+          <h2>Máy lạnh Inverter 1 HP</h2>
+          <p class="product-description">Giải pháp làm mát cho phòng ngủ hoặc không gian nhỏ.</p>
+          <p class="price">8.290.000₫</p>
+          <dl class="quick-specs">
+            <div><dt>Công suất làm lạnh</dt><dd>1 HP</dd></div>
+            <div><dt>Máy nén</dt><dd>Inverter</dd></div>
+            <div><dt>Chức năng</dt><dd>Làm lạnh</dd></div>
+          </dl>
+          <button class="detail-button" type="button" aria-label="Xem thông số máy lạnh Inverter 1 HP" onclick="toggleSpecs(this)">Xem thông số kỹ thuật</button>
+          <div class="full-specs" hidden>
+            <h3>Thông số kỹ thuật</h3>
+            <table>
+              <tbody>
+                <tr><th scope="row">Công suất làm lạnh</th><td>1 HP (mức danh định)</td></tr>
+                <tr><th scope="row">Kích thước dàn lạnh</th><td>Theo thông tin nhà sản xuất</td></tr>
+                <tr><th scope="row">Công nghệ</th><td>Inverter</td></tr>
+                <tr><th scope="row">Điện năng tiêu thụ</th><td>Kiểm tra theo model cụ thể</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&q=85" alt="Nồi cơm điện gia đình" loading="lazy">
+          <span class="product-tag">Dễ sử dụng</span>
+        </div>
+        <div class="product-content">
+          <p class="product-category">NỒI CƠM ĐIỆN</p>
+          <h2>Nồi cơm điện dung tích 1,8 lít</h2>
+          <p class="product-description">Dung tích phổ biến cho bữa cơm gia đình hằng ngày.</p>
+          <p class="price">890.000₫</p>
+          <dl class="quick-specs">
+            <div><dt>Dung tích</dt><dd>1,8 lít</dd></div>
+            <div><dt>Công suất</dt><dd>700 W</dd></div>
+            <div><dt>Lòng nồi</dt><dd>Chống dính</dd></div>
+          </dl>
+          <button class="detail-button" type="button" aria-label="Xem thông số nồi cơm điện 1,8 lít" onclick="toggleSpecs(this)">Xem thông số kỹ thuật</button>
+          <div class="full-specs" hidden>
+            <h3>Thông số kỹ thuật</h3>
+            <table>
+              <tbody>
+                <tr><th scope="row">Dung tích</th><td>1,8 lít (mẫu minh họa)</td></tr>
+                <tr><th scope="row">Công suất</th><td>700 W (mẫu minh họa)</td></tr>
+                <tr><th scope="row">Lòng nồi</th><td>Chống dính</td></tr>
+                <tr><th scope="row">Chế độ</th><td>Nấu cơm, giữ ấm</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <p class="disclaimer">Lưu ý: Đây là giao diện học tập minh họa. Tên sản phẩm, giá và thông số không đại diện cho hàng hóa đang được bán thực tế. Hãy thay bằng dữ liệu đã kiểm chứng nếu dùng trong báo cáo hoặc dự án thực tế.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Bài tập giao diện HTML5 &amp; CSS3 · Không có chức năng đặt hàng thực tế.</div>
+  </footer>
+
+  <script>
+    function toggleSpecs(button) {
+      const panel = button.nextElementSibling;
+      const isOpening = panel.hidden;
+      panel.hidden = !isOpening;
+      button.setAttribute("aria-expanded", String(isOpening));
+      button.textContent = isOpening ? "Thu gọn thông số" : "Xem thông số kỹ thuật";
+    }
+  </script>
+</body>
+</html>
