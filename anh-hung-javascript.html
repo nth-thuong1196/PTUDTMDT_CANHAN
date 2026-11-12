@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anh Hùng JavaScript - Đại Chiến Rồng Già</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Header thông tin sinh viên */
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .header h1 {
+            color: #e94560;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        /* Bảng thiết lập nhân vật ban đầu */
+        .setup-panel {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            max-width: 500px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .setup-panel h2 {
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #ff2e55;
+            transform: scale(1.02);
+        }
+
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Sàn đấu chính */
+        .arena-container {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .battlefield {
+            position: relative;
+            height: 350px;
+            background: radial-gradient(circle at center, #2b2d42 0%, #12131c 100%);
+            border-radius: 15px;
+            border: 3px solid #4cc9f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 30px 60px;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* Sàn đất */
+        .battlefield::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #1f2421;
+            border-top: 3px solid #3a5a40;
+        }
+
+        /* Khu vực từng nhân vật */
+        .fighter-box {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px;
+        }
+
+        /* Thanh máu và chỉ số */
+        .stats-card {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .name-tag {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hp-bar-bg {
+            width: 100%;
+            height: 16px;
+            background: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .hp-bar-fill {
+            height: 100%;
+            background: #2ec4b6;
+            width: 100%;
+            transition: width 0.4s ease, background 0.3s;
+        }
+
+        .dragon-hp {
+            background: #e71d36;
+        }
+
+        .mini-stats {
+            font-size: 12px;
+            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Tạo hình nhân vật */
+        .character-sprite {
+            font-size: 110px;
+            line-height: 1;
+            user-select: none;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.6));
+        }
+
+        /* Hiệu ứng chữ bay lên (Sát thương / Né đòn / Chí mạng) */
+        .floating-text {
+            position: absolute;
+            top: 40%;
+            font-size: 24px;
+            font-weight: 900;
+            text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 10;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            50% { transform: translateY(-30px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1); }
+        }
+
+        /* === CÁC CHUYỂN ĐỘNG (ANIMATIONS) === */
+        /* Anh hùng lao tới chém */
+        @keyframes heroAttackAnim {
+            0% { transform: translateX(0) rotate(0deg); }
+            40% { transform: translateX(280px) rotate(15deg) scale(1.1); }
+            60% { transform: translateX(260px) rotate(-10deg); }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+        .anim-hero-attack {
+            animation: heroAttackAnim 0.6s ease-in-out;
+        }
+
+        /* Rồng lao tới phun lửa */
+        @keyframes dragonAttackAnim {
+            0% { transform: translateX(0) scale(1); }
+            40% { transform: translateX(-280px) scale(1.2); }
+            60% { transform: translateX(-250px) scale(1.1); }
+            100% { transform: translateX(0) scale(1); }
+        }
+        .anim-dragon-attack {
+            animation: dragonAttackAnim 0.6s ease-in-out;
+        }
+
+        /* Bị đánh trúng (Rung lắc + chớp đỏ) */
+        @keyframes hitAnim {
+            0%, 100% { transform: translateX(0); filter: brightness(1); }
+            20% { transform: translateX(-15px); filter: sepia(1) hue-rotate(-50deg) saturate(5); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-15px); filter: sepia(1) hue-rotate(-50deg) saturate(5); }
+            80% { transform: translateX(15px); }
+        }
+        .anim-hit {
+            animation: hitAnim 0.5s ease-in-out;
+        }
+
+        /* Né đòn (Lùi lại + mờ đi) */
+        @keyframes dodgeAnim {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            50% { transform: translateX(-40px) translateY(-25px); opacity: 0.4; }
+            100% { transform: translateX(0) translateY(0); opacity: 1; }
+        }
+        .anim-dodge-left {
+            animation: dodgeAnim 0.5s ease-out;
+        }
+
+        @keyframes dodgeRightAnim {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            50% { transform: translateX(40px) translateY(-25px); opacity: 0.4; }
+            100% { transform: translateX(0) translateY(0); opacity: 1; }
+        }
+        .anim-dodge-right {
+            animation: dodgeRightAnim 0.5s ease-out;
+        }
+
+        /* Bảng điều khiển & Nhật ký trận đấu */
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .battle-log {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #4cc9f0;
+            border-radius: 10px;
+            height: 180px;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .log-hero { color: #4cc9f0; }
+        .log-dragon { color: #ff4d6d; }
+        .log-crit { color: #ffd166; font-weight: bold; }
+        .log-miss { color: #adb5bd; font-style: italic; }
+        .log-sys { color: #06d6a0; font-weight: bold; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>⚔️ Anh Hùng JavaScript ⚔️</h1>
+        <p id="student-info">Họ và tên: Nguyễn Thị Hoài Thương | MSSV: 31241026283</p>
+    </div>
+
+    <!-- Bước 1: Thiết lập nhân vật theo logic code gốc -->
+    <div class="setup-panel" id="setup-panel">
+        <h2>Khởi Tạo Anh Hùng (Level 5)</h2>
+        <div class="form-group">
+            <label for="input-name">Nhập lại tên của bạn (Kiểm tra trí nhớ +5/-5 Intel):</label>
+            <input type="text" id="input-name" placeholder="Gợi ý: Nguyễn Thị Hoài Thương" value="Nguyễn Thị Hoài Thương">
+        </div>
+        <div class="form-group">
+            <label for="select-class">Chọn phân cấp nhân vật:</label>
+            <select id="select-class">
+                <option value="a">a: Chiến Binh (+15 Str, -10 Agi, -5 Int)</option>
+                <option value="b">b: Sát Thủ (-15 Str, +10 Agi, +5 Int)</option>
+                <option value="c">c: Thợ Săn (-15 Str, +15 Int)</option>
+            </select>
+        </div>
+        <button class="btn" onclick="startGame()">VÀO TRẬN CHIẾN VỚI RỒNG GIÀ!</button>
+    </div>
+
+    <!-- Bước 2: Sàn đấu mô phỏng -->
+    <div class="arena-container" id="arena-container">
+        <div class="battlefield" id="battlefield">
+            <div class="fighter-box" id="hero-box">
+                <div class="stats-card">
+                    <div class="name-tag">
+                        <span id="hero-title">🛡️ Anh Hùng</span>
+                        <span id="hero-hp-text">105/105</span>
+                    </div>
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill" id="hero-hp-bar"></div>
+                    </div>
+                    <div class="mini-stats">
+                        <span id="stat-str">STR: 0</span>
+                        <span id="stat-agi">AGI: 0</span>
+                        <span id="stat-int">INT: 0</span>
+                    </div>
+                </div>
+                <div class="character-sprite" id="hero-sprite">🦸‍♂️</div>
+            </div>
+
+            <div class="fighter-box" id="dragon-box">
+                <div class="stats-card">
+                    <div class="name-tag">
+                        <span>🐉 Rồng Già</span>
+                        <span id="dragon-hp-text">600/600</span>
+                    </div>
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill dragon-hp" id="dragon-hp-bar"></div>
+                    </div>
+                    <div class="mini-stats">
+                        <span>STR: 100</span>
+                        <span>AGI: 15</span>
+                        <span>INT: 80</span>
+                    </div>
+                </div>
+                <div class="character-sprite" id="dragon-sprite">🐉</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="btn-turn" onclick="playTurn()">⚔️ ĐÁNH 1 LƯỢT</button>
+            <button class="btn" id="btn-auto" style="background: #f77f00;" onclick="toggleAutoPlay()">⚡ TỰ ĐỘNG ĐÁNH</button>
+            <button class="btn" style="background: #4361ee;" onclick="location.reload()">🔄 CHƠI LẠI</button>
+        </div>
+
+        <div class="battle-log" id="battle-log">
+            <div class="log-sys">--- Trận chiến bắt đầu! Hãy nhấn "Đánh 1 lượt" hoặc "Tự động đánh" ---</div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. HỆ THỐNG TẠO ÂM THANH (WEB AUDIO API)
+        // ==========================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'attack') {
+                // Tiếng chém gió
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'crit') {
+                // Tiếng nổ chí mạng
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.35);
+                gain.gain.setValueAtTime(0.5, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'dragon') {
+                // Tiếng rồng gầm / phun lửa
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(40, now + 0.4);
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'dodge') {
+                // Tiếng lướt né đòn
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(700, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'win') {
+                // Nhạc chiến thắng
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(554, now + 0.15);
+                osc.frequency.setValueAtTime(659, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        // ==========================================
+        // 2. BIẾN CHỈ SỐ TỪ CODE GỐC CỦA BẠN
+        // ==========================================
+        const defaultName = "Nguyễn Thị Hoài Thương";
+        const MSSV = 31241026283;
+        
+        let level = 1;
+        let xp = 0;
+        let skillpoints = 5;
+        level++;
+        xp = 150 * (level - 1) + 200; // 350
+        skillpoints = skillpoints + xp / 10; // 40
+
+        let strength = 0.6 * skillpoints + 0.1 * xp; // 59
+        let agility = 0.2 * skillpoints + 0.2 * xp;  // 78
+        let intel = 0.6 * skillpoints + 10 * level;  // 44
+
+        let health = 105;
+        const maxHeroHealth = 105;
+
+        // Chỉ số Rồng Già
+        let dragonHealth = 600;
+        const maxDragonHealth = 600;
+        const dragonStr = 100;
+        const dragonAgi = 15;
+        const dragonInt = 80;
+
+        let gameContinue = true;
+        let isAnimating = false;
+        let autoInterval = null;
+
+        // ==========================================
+        // 3. KHỞI TẠO NHÂN VẬT
+        // ==========================================
+        function startGame() {
+            const nhapTen = document.getElementById('input-name').value.trim();
+            const chonVai = document.getElementById('select-class').value;
+
+            // Kiểm tra tên (+5 / -5 intel)
+            if (nhapTen === defaultName) {
+                intel += 5;
+                addLog("Chính xác! Bạn có trí nhớ rất tốt! (+5 Intel)", "log-sys");
+            } else {
+                intel -= 5;
+                addLog("Tệ thật! Tên chính mình mà không nhớ sao?! (-5 Intel)", "log-dragon");
+            }
+
+            // Phân cấp nhân vật
+            let phanCap = "";
+            switch (chonVai) {
+                case "a":
+                    phanCap = "Chiến Binh";
+                    strength += 15;
+                    agility -= 10;
+                    intel -= 5;
+                    document.getElementById('hero-sprite').innerText = "🛡️";
+                    break;
+                case "b":
+                    phanCap = "Sát Thủ";
+                    strength -= 15;
+                    agility += 10;
+                    intel += 5;
+                    document.getElementById('hero-sprite').innerText = "🥷";
+                    break;
+                case "c":
+                    phanCap = "Thợ Săn";
+                    strength -= 15;
+                    intel += 15;
+                    document.getElementById('hero-sprite').innerText = "🏹";
+                    break;
+            }
+
+            level = 5;
+            health = level + 100; // 105
+
+            // Cập nhật giao diện
+            document.getElementById('hero-title').innerText = `${phanCap} (Lv.${level})`;
+            document.getElementById('stat-str').innerText = `STR: ${strength.toFixed(1)}`;
+            document.getElementById('stat-agi').innerText = `AGI: ${agility.toFixed(1)}`;
+            document.getElementById('stat-int').innerText = `INT: ${intel.toFixed(1)}`;
+            updateHPBars();
+
+            document.getElementById('setup-panel').style.display = 'none';
+            document.getElementById('arena-container').style.display = 'flex';
+        }
+
+        // ==========================================
+        // 4. HIỆU ỨNG HÌNH ẢNH & CHUYỂN ĐỘNG
+        // ==========================================
+        function triggerAnim(elementId, animClass) {
+            const el = document.getElementById(elementId);
+            el.classList.remove(animClass);
+            void el.offsetWidth; // Reset animation
+            el.classList.add(animClass);
+        }
+
+        function showFloatingText(targetBoxId, text, color) {
+            const box = document.getElementById(targetBoxId);
+            const floatEl = document.createElement('div');
+            floatEl.className = 'floating-text';
+            floatEl.innerText = text;
+            floatEl.style.color = color;
+            box.appendChild(floatEl);
+            setTimeout(() => floatEl.remove(), 1000);
+        }
+
+        function updateHPBars() {
+            const heroPct = Math.max(0, (health / maxHeroHealth) * 100);
+            const dragonPct = Math.max(0, (dragonHealth / maxDragonHealth) * 100);
+
+            document.getElementById('hero-hp-bar').style.width = heroPct + '%';
+            document.getElementById('hero-hp-text').innerText = `${Math.max(0, health.toFixed(0))}/${maxHeroHealth}`;
+
+            document.getElementById('dragon-hp-bar').style.width = dragonPct + '%';
+            document.getElementById('dragon-hp-text').innerText = `${Math.max(0, dragonHealth.toFixed(0))}/${maxDragonHealth}`;
+        }
+
+        function addLog(msg, className) {
+            const logBox = document.getElementById('battle-log');
+            const line = document.createElement('div');
+            line.className = className;
+            line.innerText = `> ${msg}`;
+            logBox.appendChild(line);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // ==========================================
+        // 5. LOGIC TỪNG LƯỢT ĐÁNH (CHUYỂN TỪ WHILE LOOP)
+        // ==========================================
+        function playTurn() {
+            if (!gameContinue || isAnimating) return;
+            isAnimating = true;
+            document.getElementById('btn-turn').disabled = true;
+
+            // --- PHA 1: ANH HÙNG TẤN CÔNG ---
+            triggerAnim('hero-sprite', 'anim-hero-attack');
+            
+            setTimeout(() => {
+                let heroHit = Math.random() * 100 > dragonAgi;
+                if (heroHit) {
+                    dragonHealth -= strength;
+                    playSound('attack');
+                    triggerAnim('dragon-sprite', 'anim-hit');
+                    showFloatingText('dragon-box', `-${strength.toFixed(0)}`, '#ff4d6d');
+                    addLog(`TRẢM LONG! Bạn gây sát thương ${strength.toFixed(1)} điểm cho Rồng!`, 'log-hero');
+
+                    // Kiểm tra chí mạng
+                    let heroCritical = Math.random() * 100 < intel;
+                    if (heroCritical) {
+                        let critDmg = strength * 2;
+                        dragonHealth -= critDmg;
+                        setTimeout(() => {
+                            playSound('crit');
+                            showFloatingText('dragon-box', `CHÍ MẠNG -${critDmg.toFixed(0)}!`, '#ffd166');
+                        }, 200);
+                        addLog(`CHÍ MẠNG! Bạn gây thêm ${critDmg.toFixed(1)} điểm sát thương cho Rồng!`, 'log-crit');
+                    }
+                } else {
+                    playSound('dodge');
+                    triggerAnim('dragon-sprite', 'anim-dodge-right');
+                    showFloatingText('dragon-box', 'NÉ ĐÒN!', '#adb5bd');
+                    addLog('XÍ HỤT! Rồng đã lượn tránh được đòn tấn công của Bạn!', 'log-miss');
+                }
+                updateHPBars();
+
+                // Kiểm tra Rồng chết chưa
+                if (dragonHealth <= 0) {
+                    gameContinue = false;
+                    stopAutoPlay();
+                    playSound('win');
+                    document.getElementById('dragon-sprite').innerText = "💀";
+                    addLog('CHIẾN THẮNG!!! Chúc mừng bạn đã hạ gục Rồng Già!!!', 'log-sys');
+                    return;
+                }
+
+                // --- PHA 2: RỒNG PHẢN CÔNG (Sau 0.9 giây) ---
+                setTimeout(() => {
+                    triggerAnim('dragon-sprite', 'anim-dragon-attack');
+
+                    setTimeout(() => {
+                        let dragonHit = Math.random() * 100 > agility;
+                        if (dragonHit) {
+                            health -= dragonStr;
+                            playSound('dragon');
+                            triggerAnim('hero-sprite', 'anim-hit');
+                            showFloatingText('hero-box', `-${dragonStr}`, '#ff4d6d');
+                            addLog(`HỎA CẦU! Rồng gây sát thương ${dragonStr} điểm cho Bạn!`, 'log-dragon');
+
+                            // Kiểm tra Rồng chí mạng
+                            let dragonCritical = Math.random() * 100 < dragonInt;
+                            if (dragonCritical) {
+                                let dCrit = dragonStr * 2;
+                                health -= dCrit;
+                                setTimeout(() => {
+                                    playSound('crit');
+                                    showFloatingText('hero-box', `CHÍ MẠNG -${dCrit}!`, '#ffd166');
+                                }, 200);
+                                addLog(`CHÍ MẠNG! Rồng gây thêm ${dCrit} điểm sát thương cho Bạn!`, 'log-crit');
+                            }
+                        } else {
+                            playSound('dodge');
+                            triggerAnim('hero-sprite', 'anim-dodge-left');
+                            showFloatingText('hero-box', 'NÉ ĐÒN!', '#4cc9f0');
+                            addLog('XÍ HỤT! Bạn đã tránh được đòn tấn công từ Rồng!', 'log-miss');
+                        }
+                        updateHPBars();
+
+                        // Kiểm tra Anh hùng chết chưa
+                        if (health <= 0) {
+                            gameContinue = false;
+                            stopAutoPlay();
+                            document.getElementById('hero-sprite').innerText = "🍗";
+                            addLog('THẤT BẠI!!! Bạn đã có tên trên menu món tối của Rồng: Hiệp sĩ nướng lá lốt!', 'log-dragon');
+                        } else {
+                            isAnimating = false;
+                            if (!autoInterval) {
+                                document.getElementById('btn-turn').disabled = false;
+                            }
+                        }
+                    }, 250);
+                }, 900);
+
+            }, 250);
+        }
+
+        // ==========================================
+        // 6. CHẾ ĐỘ TỰ ĐỘNG ĐÁNH
+        // ==========================================
+        function toggleAutoPlay() {
+            const btnAuto = document.getElementById('btn-auto');
+            if (autoInterval) {
+                stopAutoPlay();
+            } else {
+                btnAuto.innerText = "⏸️ DỪNG TỰ ĐỘNG";
+                btnAuto.style.background = "#e63946";
+                playTurn();
+                autoInterval = setInterval(() => {
+                    if (gameContinue && !isAnimating) {
+                        playTurn();
+                    }
+                }, 1800);
+            }
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoInterval);
+            autoInterval = null;
+            const btnAuto = document.getElementById('btn-auto');
+            btnAuto.innerText = "⚡ TỰ ĐỘNG ĐÁNH";
+            btnAuto.style.background = "#f77f00";
+            if (gameContinue) {
+                document.getElementById('btn-turn').disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
