@@ -1,0 +1,181 @@
+
+/* LAB DETAIL PAGES */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f8f8f6;
+    color: #252525;
+    line-height: 1.7;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lab-page {
+    width: min(100% - 48px, 1000px);
+    margin: 0 auto;
+    padding: 48px 0 32px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 64px;
+    color: #777;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #b66b3d;
+}
+
+.lab-label {
+    color: #b66b3d;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.lab-header {
+    max-width: 760px;
+    margin-bottom: 64px;
+}
+
+.lab-header h1 {
+    margin: 14px 0;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+}
+
+.lab-subtitle {
+    color: #777;
+    font-size: 17px;
+}
+
+.lab-section {
+    padding: 32px 0;
+    border-top: 1px solid #deded9;
+}
+
+.section-number {
+    color: #b66b3d;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.lab-section h2 {
+    margin: 8px 0 20px;
+    font-size: 24px;
+}
+
+.learning-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    list-style: none;
+}
+
+.learning-list li {
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e8e7e2;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.learning-list li::before {
+    content: "— ";
+    color: #b66b3d;
+    font-weight: 700;
+}
+
+.lab-description {
+    max-width: 760px;
+    color: #666;
+}
+
+.github-section {
+    margin-top: 24px;
+    padding: 32px;
+    background: #efeee9;
+    border-radius: 10px;
+}
+
+.github-section h2 {
+    margin-bottom: 8px;
+    font-size: 22px;
+}
+
+.github-section p {
+    margin-bottom: 22px;
+    color: #666;
+}
+
+.github-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #252525;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.github-button:hover {
+    background: #b66b3d;
+}
+
+.lab-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid #deded9;
+    color: #888;
+    font-size: 12px;
+}
+
+.lab-footer a:hover {
+    color: #b66b3d;
+}
+
+@media (max-width: 600px) {
+    .lab-page {
+        width: min(100% - 32px, 1000px);
+        padding-top: 28px;
+    }
+
+    .back-link {
+        margin-bottom: 44px;
+    }
+
+    .lab-header {
+        margin-bottom: 40px;
+    }
+
+    .learning-list {
+        grid-template-columns: 1fr;
+    }
+
+    .github-section {
+        padding: 24px;
+    }
+
+    .lab-footer {
+        flex-direction: column;
+    }
+}
