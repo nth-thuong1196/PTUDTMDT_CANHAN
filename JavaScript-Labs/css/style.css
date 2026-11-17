@@ -1,0 +1,428 @@
+
+/* =========================
+   1. GLOBAL
+========================= */
+:root {
+    --background: #faf9f6;
+    --surface: #ffffff;
+    --primary: #263b50;
+    --accent: #c58b62;
+    --text: #30343b;
+    --muted: #777b80;
+    --border: #e9e5df;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.7;
+}
+
+.container {
+    width: min(1120px, 90%);
+    margin: 0 auto;
+}
+
+.section {
+    padding: 90px 0;
+}
+
+h1, h2, h3 {
+    line-height: 1.3;
+}
+
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+h2 {
+    font-size: 38px;
+    color: var(--primary);
+}
+
+.eyebrow {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.section-description {
+    color: var(--muted);
+    margin: 12px 0 35px;
+    max-width: 600px;
+}
+
+
+/* =========================
+   2. HEADER
+========================= */
+.header {
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav {
+    height: 76px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.nav nav {
+    display: flex;
+    gap: 30px;
+}
+
+.nav nav a,
+.github-link {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.nav nav a:hover,
+.github-link:hover {
+    color: var(--accent);
+}
+
+
+/* =========================
+   3. HERO
+========================= */
+.hero {
+    padding: 100px 0;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr;
+    align-items: center;
+    gap: 70px;
+}
+
+.hero h1 {
+    font-size: clamp(40px, 5vw, 62px);
+    color: var(--primary);
+    margin-bottom: 24px;
+}
+
+.hero h1 span {
+    color: var(--accent);
+}
+
+.hero-description {
+    color: var(--muted);
+    max-width: 570px;
+    margin-bottom: 30px;
+}
+
+.hero-image {
+    height: 390px;
+    overflow: hidden;
+    border-radius: 180px 180px 15px 15px;
+    background: #e8dfd4;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 12px 22px;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--primary);
+}
+
+
+/* =========================
+   4. ABOUT
+========================= */
+.about {
+    background: #f0ede7;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.info-card {
+    background: white;
+    padding: 22px;
+    border-radius: 8px;
+}
+
+.info-card span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.info-card h3 {
+    font-size: 15px;
+    margin-top: 8px;
+    color: var(--primary);
+}
+
+.about-content {
+    margin-top: 45px;
+    max-width: 850px;
+}
+
+.about-content h3 {
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+
+/* =========================
+   5. LEARNING
+========================= */
+.learning-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.learning-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.learning-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px #263b5010;
+}
+
+.card-number {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.learning-card h3 {
+    margin: 20px 0 12px;
+    color: var(--primary);
+}
+
+.learning-card p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.tag {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 5px 12px;
+    background: #f4eee8;
+    color: #986d4f;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+
+/* =========================
+   6. LABS
+========================= */
+.labs {
+    background: #f0ede7;
+}
+
+.lab-list {
+    display: grid;
+    gap: 16px;
+}
+
+.lab-card {
+    background: white;
+    border-radius: 8px;
+    padding: 28px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.lab-label {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.lab-card h3 {
+    color: var(--primary);
+    margin: 8px 0;
+}
+
+.lab-card p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.lab-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.lab-link:hover {
+    color: var(--accent);
+}
+
+
+/* =========================
+   7. REFLECTION
+========================= */
+.reflection-content {
+    max-width: 850px;
+}
+
+.reflection-content p:last-child {
+    color: var(--muted);
+    margin-top: 20px;
+}
+
+
+/* =========================
+   8. FOOTER
+========================= */
+.footer {
+    background: var(--primary);
+    color: white;
+    padding: 25px 0;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer p,
+.footer a {
+    font-size: 13px;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+
+/* =========================
+   9. RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .nav {
+        height: auto;
+        min-height: 70px;
+        flex-wrap: wrap;
+        padding: 15px 0;
+        gap: 12px;
+    }
+
+    .nav nav {
+        order: 3;
+        width: 100%;
+        gap: 18px;
+        overflow-x: auto;
+    }
+
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .hero {
+        padding: 65px 0;
+    }
+
+    .hero-image {
+        height: 350px;
+        max-width: 350px;
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .learning-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lab-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .section {
+        padding: 65px 0;
+    }
+
+    .footer .container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+}
