@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Thu Chi - Node.js & MySQL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>HỆ THỐNG QUẢN LÝ THU CHI CÁ NHÂN</h1>
+
+    <!-- KHU VỰC 1: THỐNG KÊ -->
+    <div class="stats">
+        <div class="card">
+            <h3>Tổng Thu (Đã hoàn thành)</h3>
+            <p id="total-income" class="income-text">0 đ</p>
+        </div>
+        <div class="card">
+            <h3>Tổng Chi (Đã hoàn thành)</h3>
+            <p id="total-expense" class="expense-text">0 đ</p>
+        </div>
+        <div class="card">
+            <h3>Số Dư Hiện Tại</h3>
+            <p id="balance" class="balance-text">0 đ</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- KHU VỰC 2: FORM THÊM / SỬA -->
+        <div class="box">
+            <h3 id="form-title">Thêm Giao Dịch Mới</h3>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>Tên khoản thu/chi</label>
+                <input type="text" id="title" placeholder="VD: Tiền lương, Mua sách...">
+            </div>
+            <div class="form-group">
+                <label>Số tiền (VNĐ)</label>
+                <input type="number" id="amount" placeholder="VD: 150000">
+            </div>
+            <div class="form-group">
+                <label>Loại giao dịch</label>
+                <select id="type">
+                    <option value="income">Khoản Thu (+)</option>
+                    <option value="expense">Khoản Chi (-)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select id="status">
+                    <option value="completed">Đã hoàn thành</option>
+                    <option value="pending">Chờ thanh toán</option>
+                </select>
+            </div>
+            <button onclick="saveTransaction()" id="btn-submit">Lưu Giao Dịch</button>
+            <button onclick="resetForm()" id="btn-cancel" class="btn-cancel">Hủy Sửa</button>
+        </div>
+
+        <!-- KHU VỰC 3: DANH SÁCH & CẬP NHẬT TRẠNG THÁI -->
+        <div class="box">
+            <div class="filter-bar">
+                <h3>Danh Sách Giao Dịch</h3>
+                <select id="filter-status" onchange="loadData()">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="completed">Đã hoàn thành</option>
+                    <option value="pending">Chờ thanh toán</option>
+                </select>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nội dung</th>
+                        <th>Số tiền</th>
+                        <th>Trạng thái (Nhấn để đổi)</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-list"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentData = [];
+
+    function formatMoney(num) {
+        return Number(num).toLocaleString('vi-VN') + ' đ';
+    }
+
+    // Lấy dữ liệu & Thống kê từ Backend
+    async function loadData() {
+        const res = await fetch('/api/transactions');
+        const data = await res.json();
+        currentData = data.transactions;
+
+        document.getElementById('total-income').innerText = formatMoney(data.stats.totalIncome);
+        document.getElementById('total-expense').innerText = formatMoney(data.stats.totalExpense);
+        document.getElementById('balance').innerText = formatMoney(data.stats.balance);
+
+        const list = document.getElementById('transaction-list');
+        const filter = document.getElementById('filter-status').value;
+        list.innerHTML = '';
+
+        currentData.forEach(item => {
+            if (filter === 'all' || item.status === filter) {
+                const row = document.createElement('tr');
+                const amountClass = item.type === 'income' ? 'income-text' : 'expense-text';
+                const sign = item.type === 'income' ? '+' : '-';
+                const statusClass = item.status === 'completed' ? 'status-done' : 'status-pending';
+                const statusText = item.status === 'completed' ? 'Đã hoàn thành' : 'Chờ thanh toán';
+
+                row.innerHTML = `
+                    <td><strong>${item.title}</strong></td>
+                    <td class="${amountClass}"><strong>${sign}${formatMoney(item.amount)}</strong></td>
+                    <td><span class="badge ${statusClass}" onclick="toggleStatus(${item.id}, '${item.status}')" title="Nhấn để đổi trạng thái">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editTransaction(${item.id})">Sửa</button>
+                        <button class="action-btn btn-delete" onclick="deleteTransaction(${item.id})">Xóa</button>
+                    </td>
+                `;
+                list.appendChild(row);
+            }
+        });
+    }
+
+    // Thêm mới hoặc Sửa
+    async function saveTransaction() {
+        const id = document.getElementById('edit-id').value;
+        const title = document.getElementById('title').value.trim();
+        const amount = parseFloat(document.getElementById('amount').value);
+        const type = document.getElementById('type').value;
+        const status = document.getElementById('status').value;
+
+        if (!title || isNaN(amount) || amount <= 0) {
+            alert('Vui lòng nhập đầy đủ tên và số tiền lớn hơn 0!');
+            return;
+        }
+
+        const payload = { title, amount, type, status };
+        const url = id ? `/api/transactions/${id}` : '/api/transactions';
+        const method = id ? 'PUT' : 'POST';
+
+        await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        resetForm();
+        loadData();
+    }
+
+    // Đưa dữ liệu lên Form để Sửa
+    function editTransaction(id) {
+        const item = currentData.find(t => t.id === id);
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('title').value = item.title;
+        document.getElementById('amount').value = item.amount;
+        document.getElementById('type').value = item.type;
+        document.getElementById('status').value = item.status;
+
+        document.getElementById('form-title').innerText = 'Cập Nhật Giao Dịch';
+        document.getElementById('btn-submit').innerText = 'Cập Nhật';
+        document.getElementById('btn-cancel').style.display = 'block';
+    }
+
+    // Cập nhật trạng thái nhanh
+    async function toggleStatus(id, currentStatus) {
+        const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+        await fetch(`/api/transactions/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        });
+        loadData();
+    }
+
+    // Xóa giao dịch
+    async function deleteTransaction(id) {
+        if (confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
+            await fetch(`/api/transactions/${id}`, { method: 'DELETE' });
+            loadData();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('edit-id').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('amount').value = '';
+        document.getElementById('type').value = 'income';
+        document.getElementById('status').value = 'completed';
+        document.getElementById('form-title').innerText = 'Thêm Giao Dịch Mới';
+        document.getElementById('btn-submit').innerText = 'Lưu Giao Dịch';
+        document.getElementById('btn-cancel').style.display = 'none';
+    }
+
+    loadData();
+</script>
+
+</body>
+</html>
